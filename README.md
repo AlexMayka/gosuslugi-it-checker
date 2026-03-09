@@ -1,67 +1,104 @@
-# Проект Selenium_python. Проверка it-аккредитации компаний
-## Оглавление 
+<div align="center">
 
-## Оглавление  
-[1. Описание проекта](README.md#Описание-проекта)  
-[2. Какой кейс решаем?](README.md#Какой-кейс-решаем)  
-[3. Библиотеки](README.md#Библиотеки)  
-[4. Краткая информация о данных](README.md#Краткая-информация-о-данных)  
-[5. Этапы работы программы](README.md#Этапы-работы-программы)    
-[6. Результаты](README.md#Результатыы) <br>
-[7. Выводы](README.md#Выводы) 
+# 🏛 Gosuslugi IT Checker
 
-### Описание проекта    
-олучить информицию о статусе аккредитации it-компаний из сайта "Госуслуги" (https://www.gosuslugi.ru/itorgs) 
+**Automated bulk verification of IT accreditation status for Russian companies**
 
-### Какой кейс решаем?
-Использование методов http-запросов не дал нужного результата. Слишком долгая проверка одной ИНН и быстрая блокировка IP.<br>
-Поэтому было решено использовать Python и Selenium
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Selenium](https://img.shields.io/badge/Selenium-43B02A?style=for-the-badge&logo=selenium&logoColor=white)](https://selenium.dev)
+[![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org)
 
-### Библиотеки
-В данном проекте использовались библиотеки:
-- Logging
-- Time
-- Pandas
-- Numpy
-- Selenium
+<br>
 
-### Краткая информация о данных
+<table>
+<tr>
+<td align="center"><h3>🏢 Bulk check</h3><sub>hundreds of companies</sub></td>
+<td align="center"><h3>🤖 Automated</h3><sub>no manual work</sub></td>
+<td align="center"><h3>📄 CSV export</h3><sub>ready for analysis</sub></td>
+<td align="center"><h3>📋 Logged</h3><sub>full execution trace</sub></td>
+</tr>
+</table>
 
-В качестве входных данных выступают ИНН компаний в ['.csv'-файл](inn_org\inn_org.csv) с ИНН организаций
+</div>
 
-![input.png](img/input.png)
+---
 
-### Этапы работы программы
-<ol>
-    <li>ИНН организации извлекаются из ".csv"-файла;</li>
-    <li>Каждый из номеров проверяется на сайте (selenium);</li><ol>
-            <li>Открывается сайт "Госуслуг"</li>
-            <li>В поле вводится ИНН организация</li>
-            <li>Результат работы сайта записывает в DataFrame (pandas) </li>
-            <li>Очищается поле ввода</li>
-        </ol>
-    <li>Записать результат в ".csv" файл.</li>
-</ol>
+## 💡 What It Does
 
-![example_performance.gif](img%2Fexample_performance.gif)
+Checks whether companies have **active IT accreditation** on the [Gosuslugi portal](https://www.gosuslugi.ru/itorgs) — in bulk, automatically.
 
+**The problem:** Manually checking hundreds of companies one-by-one on the Gosuslugi website is tedious. HTTP-based scraping gets rate-limited and blocked quickly.
 
-### Результаты:
+**The solution:** Selenium-driven browser automation that mimics real user behavior — processes a full list of INN numbers and exports results to CSV.
 
-Файл log_for_work.log. Лог-файл работы скрипта (отслеживание статуса выполнения)
+---
 
-![log.png](img%2Flog.png)
+## 🔄 How It Works
 
-Файл с результатом работы Result_work_selenium.csv состоящий из:
-       <li>Колонка 1: inn - Идентификационный номер налогоплательщика компании</li>
-       <li>Колонка 2: name_of_company - Наименование компании</li>
-       <li>Колонка 3: IT_accreditation - Статус аккредитации-</li>
+```
+CSV with INN numbers
+        ↓
+   Selenium opens Gosuslugi
+        ↓
+   For each INN:
+   ├── Enter INN in search field
+   ├── Read accreditation result
+   ├── Save to DataFrame
+   └── Clear field, next INN
+        ↓
+   Export to CSV:
+   (INN, Company Name, Accreditation Status)
+```
 
-![out.png](img/out.png)
+### Input
 
-### Выводы 
-Программа отрабатывает корректно и дсотаточно быстро.
-Все ИНН были проверины и пошли дальше в работу. 
-<br>С результато работы можете ознакомится в [файле](inn_org/inn_org.csv) 
+CSV file with **INN numbers** (company tax identification numbers)
 
-Если информация по этому проекту покажется вам интересной или полезной, то я буду очень вам благодарен, если отметите репозиторий и профиль ⭐️⭐️⭐️-дами
+### Output
+
+CSV with three columns:
+| Column | Description |
+|--------|-------------|
+| `inn` | Company tax ID |
+| `name_of_company` | Official company name |
+| `IT_accreditation` | Accreditation status |
+
+---
+
+## 🛠 Tech Stack
+
+| | Technology | Purpose |
+|-|------------|---------|
+| 🐍 | **Python** | Core language |
+| 🌐 | **Selenium** | Browser automation |
+| 📊 | **Pandas + NumPy** | Data processing |
+| 📝 | **Logging** | Execution tracking |
+
+---
+
+## 🚀 Quick Start
+
+```bash
+git clone https://github.com/AlexMayka/gosuslugi-it-checker.git
+cd gosuslugi-it-checker
+pip install selenium pandas numpy
+python main.py
+```
+
+> Requires ChromeDriver matching your Chrome version in `Drivers/`
+
+---
+
+## 📁 Structure
+
+```
+├── main.py                   # Main script
+├── inn_org/inn_org.csv       # Input: INN numbers
+├── Result_work_selenium.csv  # Output: results
+├── Drivers/                  # ChromeDriver binaries
+└── img/                      # Screenshots & demo GIF
+```
+
+## License
+
+MIT
